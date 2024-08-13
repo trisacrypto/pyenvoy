@@ -1,3 +1,8 @@
+"""
+Defines module and package information for pyenvoy, specifically the version.
+"""
+
+
 # Module version and package information
 __version_info__ = {
     "major": 0,
