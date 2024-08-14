@@ -2,6 +2,8 @@
 Records provide immutable access to data returned by the Envoy server.
 """
 
+import json
+
 from collections.abc import Mapping, Sequence
 
 
@@ -100,6 +102,9 @@ class Record(Mapping):
     def asdict(self):
         return self.data.copy()
 
+    def pprint(self):
+        print(json.dumps(self.data, indent=2))
+
 
 class RecordList(Sequence):
     """
@@ -154,6 +159,9 @@ class RecordList(Sequence):
 
     def copy(self):
         return self.__class__(self)
+
+    def pprint(self):
+        print(json.dumps(self.data, indent=2))
 
 
 class PaginatedRecords(RecordList):

@@ -100,6 +100,7 @@ class Client(object):
 
         self._creds = None
         self._host = parse_url_host(url)
+        self._prefix = None
 
         user_agent = f"pyenvoy/{get_version(short=True)} python/{python_version()}"
 
@@ -119,7 +120,7 @@ class Client(object):
             pool_maxsize=pool_maxsize,
             max_retries=max_retries,
         )
-        self.session.mount("https://", self.adapter)
+        self.session.mount(self.prefix+"://", self.adapter)
 
         # Configure REST resources on the client
         self.accounts = Accounts(self)
@@ -139,6 +140,19 @@ class Client(object):
             self._timeout = (10.0, 30.0)
         else:
             self._timeout = value
+
+    @property
+    def prefix(self):
+        if self._prefix is None:
+            if not self._host:
+                raise ValueError("cannot compute prefix without host")
+
+            if self.is_localhost():
+                self._prefix = "http"
+            else:
+                self._prefix = "https"
+
+        return self._prefix
 
     def status(self):
         return self.get("status", require_authentication=False)
@@ -272,7 +286,7 @@ class Client(object):
 
         return urlunparse(
             URL(
-                scheme="https",
+                scheme=self.prefix,
                 netloc=self._host,
                 path=path,
                 params="",
@@ -328,6 +342,15 @@ class Client(object):
         Returns True if there are JWT claims with a valid refresh token
         """
         return self._creds is not None and self._creds.is_refreshable()
+
+    def is_localhost(self) -> bool:
+        """
+        Returns true if the host is a local domain (e.g. localhost)
+        """
+        host = self._host
+        if ":" in host:
+            host = host.split(":")[0]
+        return host == "localhost" or host.endswith(".local")
 
 
 def parse_url_host(urlstr: str) -> str:
