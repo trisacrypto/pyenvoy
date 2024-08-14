@@ -3,6 +3,7 @@ Implements the API client that manages the authentication and cookie state of re
 to and from the Envoy server. This is a lower level object and should only be used by
 advanced users.
 """
+from __future__ import annotations
 
 import os
 import logging
@@ -19,6 +20,8 @@ from urllib.parse import urlparse, urlunparse, urlencode
 
 from envoy.credentials import Credentials
 from envoy.exceptions import AuthenticationError, ServerError, ClientError
+
+from envoy.counterparties import Counterparties
 
 try:
     from json import JSONDecodeError
@@ -112,6 +115,9 @@ class Client(object):
             max_retries=max_retries,
         )
         self.session.mount("https://", self.adapter)
+
+        # Configure REST resources on the client
+        self.counterparties = Counterparties(self)
 
     @property
     def timeout(self):

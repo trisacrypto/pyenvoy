@@ -25,3 +25,9 @@ class AuthenticationError(ClientError):
     """
     Occurs when the server returns a 401 or 403 error code.
     """
+
+
+class ValidationError(ClientError):
+    """
+    The payload is invalid or a preflight check has failed.
+    """

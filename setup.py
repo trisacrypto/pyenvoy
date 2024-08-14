@@ -126,7 +126,7 @@ if __name__ == "__main__":
         "zip_safe": True,
         "entry_points": {},
         "install_requires": list(get_requires()),
-        "python_requires": ">=3.9, <4",
+        "python_requires": ">=3.10, <4",
     }
 
     setup(**config)
