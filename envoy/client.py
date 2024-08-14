@@ -17,6 +17,7 @@ from requests.sessions import Session
 from requests.adapters import HTTPAdapter
 from urllib.parse import urlparse, urlunparse, urlencode
 
+from envoy.credentials import Credentials
 from envoy.exceptions import AuthenticationError, ServerError, ClientError
 
 try:
@@ -89,7 +90,7 @@ class Client(object):
 
         url = url or os.environ.get(ENV_URL, "")
 
-        self._jwt_claims = {}
+        self._creds = None
         self._host = parse_url_host(url)
 
         user_agent = f"pyenvoy/{get_version(short=True)} python/{python_version()}"
@@ -190,7 +191,7 @@ class Client(object):
             return None
 
         elif 200 <= rep.status_code < 300:
-            mimetype, _ = parse_conent_type(rep.headers.get("content-type"))
+            mimetype, _ = parse_content_type(rep.headers.get("content-type"))
             if mimetype == "application/json":
                 return rep.json()
             else:
@@ -249,18 +250,54 @@ class Client(object):
         )
 
     def _pre_flight(self, require_authentication=True):
+        if not self._host:
+            raise ClientError("no envoy url or host specified")
+
         self._request_headers = {}
         self._request_headers.update(self.headers)
 
         if require_authentication:
-            self._request_headers.update(self._authenticate())
+            self._request_headers.update(self._authentication_headers())
 
-    def _authenticate(self) -> dict:
+    def _authentication_headers(self) -> dict:
+        if not self.is_authenticated():
+            # We need to reauthenticate, determine if we can refresh our credentials
+            if self.is_refreshable():
+                self._creds = self._reauthenticate()
+            else:
+                self._creds = self._authenticate()
+
+        return {"Authorization": "Bearer " + str(self._creds.access_token)}
+
+    def _authenticate(self) -> Credentials:
+        if not self.client_id or not self.client_secret:
+            raise AuthenticationError("no client id or secret specified")
+
+        apikey = {"client_id": self.client_id, "client_secret": self.client_secret}
+        rep = self.post(apikey, "authenticate", require_authentication=False)
+        return Credentials(rep["access_token"], rep["refresh_token"])
+
+    def _reauthenticate(self) -> Credentials:
+        if not self._creds.refresh_token:
+            raise AuthenticationError("no refresh token available")
+
+        refresh = {"refresh_token": str(self._creds.refresh_token)}
+        rep = self.post(refresh, "reauthenticate", require_authentication=False)
+        return Credentials(rep["access_token"], rep["refresh_token"])
+
+    def is_authenticated(self) -> bool:
+        """
+        Returns True if there are JWT claims with a valid access token
+        """
         # TODO: verify that the access token is still valid
-        if self._jwt_claims and "access_token" in self._jwt_claims:
-            return {"Authorization": "Bearer " + self._jwt_claims["access_token"]}
+        return self._creds is not None and self._creds.is_authenticated()
 
-        raise RuntimeError("no authentication information")
+    def is_refreshable(self) -> bool:
+        """
+        Returns True if there are JWT claims with a valid refresh token
+        """
+        # TODO: verify that the refresh token is still valid
+        return self._creds is not None and self._creds.is_refreshable()
 
 
 def parse_url_host(urlstr: str) -> str:
@@ -272,7 +309,7 @@ def parse_url_host(urlstr: str) -> str:
     return parts.path.split("/")[0]
 
 
-def parse_conent_type(mime: str) -> tuple[str, dict[str, str]]:
+def parse_content_type(mime: str) -> tuple[str, dict[str, str]]:
     msg = Message()
     msg["content-type"] = mime
     params = msg.get_params()
