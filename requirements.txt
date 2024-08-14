@@ -1,6 +1,7 @@
 # Primary Dependencies
-requests==2.32.3
+PyJWT==2.9.0
 python-dotenv==1.0.1
+requests==2.32.3
 
 # Packaging Dependencies
 # black==24.8.0

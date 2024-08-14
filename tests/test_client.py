@@ -58,5 +58,5 @@ def test_parse_url_host(arg, expected):
     ],
 )
 def test_parse_content_type(mime, expected):
-    actual, _ = parse_conent_type(mime)
+    actual, _ = parse_content_type(mime)
     assert actual == expected
