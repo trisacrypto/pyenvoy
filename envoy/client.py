@@ -124,6 +124,9 @@ class Client(object):
         else:
             self._timeout = value
 
+    def status(self):
+        return self.get("status", require_authentication=False)
+
     def get(self, *endpoint, params=None, require_authentication=True):
         self._pre_flight(require_authentication)
         headers = self._request_headers
@@ -289,14 +292,12 @@ class Client(object):
         """
         Returns True if there are JWT claims with a valid access token
         """
-        # TODO: verify that the access token is still valid
         return self._creds is not None and self._creds.is_authenticated()
 
     def is_refreshable(self) -> bool:
         """
         Returns True if there are JWT claims with a valid refresh token
         """
-        # TODO: verify that the refresh token is still valid
         return self._creds is not None and self._creds.is_refreshable()
 
 
