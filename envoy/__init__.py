@@ -56,8 +56,5 @@ def connect(url=None, client_id=None, client_secret=None, timeout=None):
         load_dotenv()
 
     return Client(
-        url=url,
-        client_id=client_id,
-        client_secret=client_secret,
-        timeout=timeout
+        url=url, client_id=client_id, client_secret=client_secret, timeout=timeout
     )

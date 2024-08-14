@@ -2,7 +2,6 @@
 Defines module and package information for pyenvoy, specifically the version.
 """
 
-
 # Module version and package information
 __version_info__ = {
     "major": 0,
@@ -14,7 +13,7 @@ __version_info__ = {
 }
 
 
-def get_version(short=False):
+def get_version(short: bool = False) -> str:
     """
     Prints the version.
     """

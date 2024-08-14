@@ -127,7 +127,12 @@ class Client(object):
     def status(self):
         return self.get("status", require_authentication=False)
 
-    def get(self, *endpoint, params=None, require_authentication=True):
+    def get(
+        self,
+        *endpoint: tuple[str],
+        params: dict = None,
+        require_authentication: bool = True,
+    ):
         self._pre_flight(require_authentication)
         headers = self._request_headers
         uri = self._make_endpoint(*endpoint)
@@ -142,7 +147,7 @@ class Client(object):
 
         return self.handle(rep)
 
-    def post(self, data, *endpoint, require_authentication=True):
+    def post(self, data, *endpoint: tuple[str], require_authentication: bool = True):
         self._pre_flight(require_authentication)
         headers = self._request_headers
         uri = self._make_endpoint(*endpoint)
@@ -155,7 +160,7 @@ class Client(object):
 
         return self.handle(rep)
 
-    def put(self, data, *endpoint, require_authentication=True):
+    def put(self, data, *endpoint: tuple[str], require_authentication: bool = True):
         self._pre_flight(require_authentication)
         headers = self._request_headers
         uri = self._make_endpoint(*endpoint)
@@ -168,13 +173,18 @@ class Client(object):
 
         return self.handle(rep)
 
-    def delete(self, *endpoint, params=None, require_authentication=True):
+    def delete(
+        self,
+        *endpoint: tuple[str],
+        params: dict = None,
+        require_authentication: bool = True,
+    ):
         self._pre_flight(require_authentication)
         headers = self._request_headers
         uri = self._make_endpoint(*endpoint)
 
         logger.debug(
-            f"DELETE to {repr(uri)} with params {repr(params)} and headers {repr(headers)}" # noqa
+            f"DELETE to {repr(uri)} with params {repr(params)} and headers {repr(headers)}"  # noqa
         )
 
         rep = self.session.delete(
@@ -252,7 +262,7 @@ class Client(object):
             )
         )
 
-    def _pre_flight(self, require_authentication=True):
+    def _pre_flight(self, require_authentication: bool = True) -> None:
         if not self._host:
             raise ClientError("no envoy url or host specified")
 
