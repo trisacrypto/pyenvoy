@@ -6,11 +6,11 @@ Defines module and package information for pyenvoy, specifically the version.
 # Module version and package information
 __version_info__ = {
     "major": 0,
-    "minor": 1,
+    "minor": 2,
     "micro": 0,
     "releaselevel": "beta",
     "post": 0,
-    "serial": 0,
+    "serial": 2,
 }
 
 
