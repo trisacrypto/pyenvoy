@@ -11,8 +11,10 @@ class Record(Mapping):
     methods for inspecting nested data and resources.
     """
 
-    def __init__(self, data=None, /, *kwargs):
+    def __init__(self, data=None, /, parent=None, **kwargs):
         self.data = {}
+        self.parent = parent
+
         if data is not None:
             self.data.update(data)
         if kwargs:
@@ -27,11 +29,11 @@ class Record(Mapping):
         may override this method to return different or particular types based on key.
         """
         if isinstance(item, dict):
-            return Record(item)
+            return Record(item, parent=self)
 
         if isinstance(item, list):
             if any([isinstance(sub, dict) for sub in item]):
-                return RecordList(item)
+                return RecordList(item, parent=self)
 
         return item
 
@@ -105,8 +107,10 @@ class RecordList(Sequence):
     request along with helper methods for inspecting subrecords.
     """
 
-    def __init__(self, initlist=None):
+    def __init__(self, initlist=None, parent=None):
         self.data = []
+        self.parent = parent
+
         if initlist is not None:
             if isinstance(initlist, type(self.data)):
                 self.data[:] = initlist[:]
@@ -121,11 +125,11 @@ class RecordList(Sequence):
         may override this method to return different or particular types.
         """
         if isinstance(item, dict):
-            return Record(item)
+            return Record(item, parent=self)
 
         if isinstance(item, list):
             if any([isinstance(sub, dict) for sub in item]):
-                return RecordList(item)
+                return RecordList(item, parent=self)
 
         return item
 
@@ -154,6 +158,29 @@ class RecordList(Sequence):
 
 class PaginatedRecords(RecordList):
 
-    def __init__(self, page, collection):
-        super(PaginatedRecords, self).__init__(collection)
-        self.page = page
+    CollectionKey = None
+    PageKey = "page"
+
+    def __init__(self, data, parent=None):
+        if self.CollectionKey is None:
+            # expecting only a "page" field and the collections field, e.g. "accounts"
+            collection_key = self._collection_key(data)
+        else:
+            collection_key = self.CollectionKey
+
+        collection = data.pop(collection_key, None)
+        super(PaginatedRecords, self).__init__(collection, parent=parent)
+
+        self.page = data.pop(self.PageKey, {})
+        for key, val in data.items():
+            setattr(self, key, val)
+
+    def _collection_key(self, data):
+        for key in data.keys():
+            if key == self.PageKey:
+                continue
+
+            if isinstance(data[key], list):
+                return key
+
+        return "collection"

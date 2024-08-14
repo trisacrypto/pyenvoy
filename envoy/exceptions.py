@@ -37,3 +37,9 @@ class ValidationError(ClientError):
     """
     The payload is invalid or a preflight check has failed.
     """
+
+
+class ReadOnlyEndpoint(EnvoyError):
+    """
+    The associated resource does not allow create, update, or delete methods
+    """

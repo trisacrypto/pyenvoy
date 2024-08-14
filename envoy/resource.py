@@ -26,23 +26,24 @@ class Resource(object):
         raise AttributeError("subclasses should define the endpoint for their resource")
 
     def list(self, params: dict = None) -> list[dict]:
-        reply = self.client.get(
-            *self._endpoint(), params=params, require_authentication=True
+        return self.RecordListType(
+            self.client.get(
+                *self._endpoint(), params=params, require_authentication=True
+            ), parent=self
         )
-
-        collection_key = [key for key in reply.keys() if key != "page"][0]
-        return self.RecordListType(page=reply["page"], collection=reply[collection_key])
 
     def create(self, data: dict) -> dict:
         return self.RecordType(
-            self.client.post(data, *self._endpoint(), require_authentication=True)
+            self.client.post(data, *self._endpoint(), require_authentication=True),
+            parent=self
         )
 
     def detail(self, rid: str, params: dict = None) -> dict:
         return self.RecordType(
             self.client.get(
                 *self._endpoint(), rid, params=params, require_authentication=True
-            )
+            ),
+            parent=self,
         )
 
     def update(self, data: dict) -> dict:
@@ -52,7 +53,8 @@ class Resource(object):
         return self.RecordType(
             self.client.put(
                 data, *self._endpoint(), data["id"], require_authentication=True
-            )
+            ),
+            parent=self
         )
 
     def delete(self, rid: str, params: dict = None) -> dict | None:
