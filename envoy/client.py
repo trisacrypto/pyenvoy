@@ -151,6 +151,8 @@ class Client(object):
         headers = self._request_headers
         uri = self._make_endpoint(*endpoint)
 
+        print(uri)
+
         logger.debug(
             f"GET to {repr(uri)} with params {repr(params)} and headers {repr(headers)}"
         )
