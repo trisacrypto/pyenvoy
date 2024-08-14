@@ -3,6 +3,7 @@ Implements the API client that manages the authentication and cookie state of re
 to and from the Envoy server. This is a lower level object and should only be used by
 advanced users.
 """
+from __future__ import annotations
 
 import os
 import logging
@@ -18,7 +19,13 @@ from requests.adapters import HTTPAdapter
 from urllib.parse import urlparse, urlunparse, urlencode
 
 from envoy.credentials import Credentials
-from envoy.exceptions import AuthenticationError, ServerError, ClientError
+from envoy.exceptions import AuthenticationError, ServerError, ClientError, NotFound
+
+from envoy.accounts import Accounts
+from envoy.transactions import Transactions
+from envoy.counterparties import Counterparties
+from envoy.users import Users
+from envoy.apikeys import APIKeys
 
 try:
     from json import JSONDecodeError
@@ -112,6 +119,13 @@ class Client(object):
             max_retries=max_retries,
         )
         self.session.mount("https://", self.adapter)
+
+        # Configure REST resources on the client
+        self.accounts = Accounts(self)
+        self.transactions = Transactions(self)
+        self.counterparties = Counterparties(self)
+        self.users = Users(self)
+        self.apikeys = APIKeys(self)
 
     @property
     def timeout(self):
@@ -225,7 +239,10 @@ class Client(object):
             except JSONDecodeError:
                 pass
 
-            raise ClientError(message)
+            if rep.status_code == 404:
+                raise NotFound(message)
+            else:
+                raise ClientError(message)
 
         elif 500 <= rep.status_code < 600:
             logger.warning(f"server error: {rep.status_code} {repr(rep.content)}")
