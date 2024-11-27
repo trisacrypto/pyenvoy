@@ -5,7 +5,10 @@ requests==2.32.3
 
 # Packaging Dependencies
 # black==24.8.0
+# build==1.2.2.post1
+# packaging==24.1
 # pip==24.2
+# pyproject_hooks==1.2.0
 # setuptools==72.2.0
 # twine==5.1.1
 # wheel==0.44.0
@@ -35,7 +38,6 @@ requests==2.32.3
 # more-itertools==10.4.0
 # mypy-extensions==1.0.0
 # nh3==0.2.18
-# packaging==24.1
 # pathspec==0.12.1
 # pkginfo==1.10.0
 # platformdirs==4.2.2
