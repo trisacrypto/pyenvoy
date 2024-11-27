@@ -2,12 +2,21 @@
 Resource that manages the counterparties the Envoy node knows about.
 """
 
+from envoy import client
+
 from envoy.resource import Resource
 from envoy.records import Record, PaginatedRecords
 
 
+##########################################################################
+## Data Records
+##########################################################################
+
 class Counterparty(Record):
-    pass
+
+    def __init__(self, data=None, **kwargs):
+        super(Counterparty, self).__init__(data, **kwargs)
+        self.contacts = Contacts(self, self.parent.client)
 
 
 class PaginatedCounterparties(PaginatedRecords):
@@ -15,8 +24,24 @@ class PaginatedCounterparties(PaginatedRecords):
     CollectionKey = "counterparties"
 
     def cast(self, item):
-        return Counterparty(item)
+        return Counterparty(item, parent=self.parent)
 
+
+class Contact(Record):
+    pass
+
+
+class PaginatedContacts(PaginatedRecords):
+
+    CollectionKey = "contacts"
+
+    def cast(self, item):
+        return Contact(item)
+
+
+##########################################################################
+## API Resources
+##########################################################################
 
 class Counterparties(Resource):
 
@@ -51,3 +76,17 @@ class Counterparties(Resource):
             return Counterparty(reply["counterparties"][0], parent=self)
 
         return PaginatedCounterparties(reply, parent=self)
+
+
+class Contacts(Resource):
+
+    RecordType = Contact
+    RecordListType = PaginatedContacts
+
+    def __init__(self, counterparty: Counterparty, client: "client.Client"):
+        super(Contacts, self).__init__(client)
+        self.counterparty = counterparty
+
+    @property
+    def endpoint(self):
+        return ("counterparties", self.counterparty["id"], "contacts")
