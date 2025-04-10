@@ -4,12 +4,12 @@ Defines module and package information for pyenvoy, specifically the version.
 
 # Module version and package information
 __version_info__ = {
-    "major": 0,
-    "minor": 4,
+    "major": 1,
+    "minor": 0,
     "micro": 0,
-    "releaselevel": "beta",
+    "releaselevel": "final",
     "post": 0,
-    "serial": 4,
+    "serial": 0,
 }
 
 
@@ -17,7 +17,7 @@ def get_version(short: bool = False) -> str:
     """
     Prints the version.
     """
-    assert __version_info__["releaselevel"] in ("alpha", "beta", "final")
+    assert __version_info__["releaselevel"] in ("alpha", "beta", "rc", "final")
     vers = ["{major}.{minor}".format(**__version_info__)]
 
     if __version_info__["micro"]:
@@ -26,7 +26,7 @@ def get_version(short: bool = False) -> str:
     if __version_info__["releaselevel"] != "final" and not short:
         vers.append(
             "{}{}".format(
-                __version_info__["releaselevel"][0],
+                __version_info__["releaselevel"],
                 __version_info__["serial"],
             )
         )
