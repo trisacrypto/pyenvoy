@@ -3,6 +3,7 @@ Implements the API client that manages the authentication and cookie state of re
 to and from the Envoy server. This is a lower level object and should only be used by
 advanced users.
 """
+
 from __future__ import annotations
 
 import os
@@ -120,7 +121,7 @@ class Client(object):
             pool_maxsize=pool_maxsize,
             max_retries=max_retries,
         )
-        self.session.mount(self.prefix+"://", self.adapter)
+        self.session.mount(self.prefix + "://", self.adapter)
 
         # Configure REST resources on the client
         self.accounts = Accounts(self)
