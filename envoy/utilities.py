@@ -19,11 +19,7 @@ class TravelAddresses(object):
         """
         data = {"decoded": rawuri}
         reply = self.client.post(
-            data,
-            "utilities",
-            "travel-address",
-            "encode",
-            require_authentication=True
+            data, "utilities", "travel-address", "encode", require_authentication=True
         )
         return reply["encoded"]
 

@@ -18,7 +18,7 @@ class Resource(object):
     RecordType = Record
     RecordListType = PaginatedRecords
 
-    def __init__(self, client : "client.Client"):
+    def __init__(self, client: "client.Client"):
         self.client = client
 
     @property
@@ -29,13 +29,14 @@ class Resource(object):
         return self.RecordListType(
             self.client.get(
                 *self._endpoint(), params=params, require_authentication=True
-            ), parent=self
+            ),
+            parent=self,
         )
 
     def create(self, data: dict) -> dict:
         return self.RecordType(
             self.client.post(data, *self._endpoint(), require_authentication=True),
-            parent=self
+            parent=self,
         )
 
     def detail(self, rid: str, params: dict = None) -> dict:
@@ -54,7 +55,7 @@ class Resource(object):
             self.client.put(
                 data, *self._endpoint(), data["id"], require_authentication=True
             ),
-            parent=self
+            parent=self,
         )
 
     def delete(self, rid: str, params: dict = None) -> dict | None:
