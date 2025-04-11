@@ -28,39 +28,56 @@ class Resource(object):
     def list(self, params: dict = None) -> list[dict]:
         return self.RecordListType(
             self.client.get(
-                *self._endpoint(), params=params, require_authentication=True
+                *self._endpoint(),
+                params=params,
+                require_authentication=True,
             ),
             parent=self,
         )
 
-    def create(self, data: dict) -> dict:
+    def create(self, data: dict, params: dict = None) -> dict:
         return self.RecordType(
-            self.client.post(data, *self._endpoint(), require_authentication=True),
+            self.client.post(
+                data,
+                *self._endpoint(),
+                params=params,
+                require_authentication=True,
+            ),
             parent=self,
         )
 
     def detail(self, rid: str, params: dict = None) -> dict:
         return self.RecordType(
             self.client.get(
-                *self._endpoint(), rid, params=params, require_authentication=True
+                *self._endpoint(),
+                rid,
+                params=params,
+                require_authentication=True,
             ),
             parent=self,
         )
 
-    def update(self, data: dict) -> dict:
+    def update(self, data: dict, params: dict = None) -> dict:
         if "id" not in data:
             raise ValidationError("an ID is required to update this resource")
 
         return self.RecordType(
             self.client.put(
-                data, *self._endpoint(), data["id"], require_authentication=True
+                data,
+                *self._endpoint(),
+                data["id"],
+                params=params,
+                require_authentication=True,
             ),
             parent=self,
         )
 
     def delete(self, rid: str, params: dict = None) -> dict | None:
         return self.client.delete(
-            *self._endpoint(), rid, params=params, require_authentication=True
+            *self._endpoint(),
+            rid,
+            params=params,
+            require_authentication=True,
         )
 
     def _endpoint(self):

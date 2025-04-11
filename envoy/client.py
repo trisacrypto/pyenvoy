@@ -173,12 +173,21 @@ class Client(object):
         )
 
         rep = self.session.get(
-            uri, headers=headers, params=params, timeout=self.timeout
+            uri,
+            headers=headers,
+            params=params,
+            timeout=self.timeout,
         )
 
         return self.handle(rep)
 
-    def post(self, data, *endpoint: tuple[str], require_authentication: bool = True):
+    def post(
+        self,
+        data,
+        *endpoint: tuple[str],
+        params: dict = None,
+        require_authentication: bool = True,
+    ):
         self._pre_flight(require_authentication)
         headers = self._request_headers
         uri = self._make_endpoint(*endpoint)
@@ -187,11 +196,23 @@ class Client(object):
             f"POST to {repr(uri)} with data {repr(data)} and headers {repr(headers)}"
         )
 
-        rep = self.session.post(uri, json=data, headers=headers, timeout=self.timeout)
+        rep = self.session.post(
+            uri,
+            json=data,
+            params=params,
+            headers=headers,
+            timeout=self.timeout,
+        )
 
         return self.handle(rep)
 
-    def put(self, data, *endpoint: tuple[str], require_authentication: bool = True):
+    def put(
+        self,
+        data,
+        *endpoint: tuple[str],
+        params: dict = None,
+        require_authentication: bool = True,
+    ):
         self._pre_flight(require_authentication)
         headers = self._request_headers
         uri = self._make_endpoint(*endpoint)
@@ -200,7 +221,13 @@ class Client(object):
             f"PUT to {repr(uri)} with data {repr(data)} and headers {repr(headers)}"
         )
 
-        rep = self.session.put(uri, json=data, headers=headers, timeout=self.timeout)
+        rep = self.session.put(
+            uri,
+            json=data,
+            params=params,
+            headers=headers,
+            timeout=self.timeout,
+        )
 
         return self.handle(rep)
 
@@ -219,7 +246,10 @@ class Client(object):
         )
 
         rep = self.session.delete(
-            uri, headers=headers, params=params, timeout=self.timeout
+            uri,
+            headers=headers,
+            params=params,
+            timeout=self.timeout,
         )
 
         return self.handle(rep)
