@@ -7,9 +7,9 @@ __version_info__ = {
     "major": 1,
     "minor": 0,
     "micro": 0,
-    "releaselevel": "final",
+    "releaselevel": "rc",
     "post": 0,
-    "serial": 0,
+    "serial": 5,
 }
 
 
@@ -18,14 +18,11 @@ def get_version(short: bool = False) -> str:
     Prints the version.
     """
     assert __version_info__["releaselevel"] in ("alpha", "beta", "rc", "final")
-    vers = ["{major}.{minor}".format(**__version_info__)]
-
-    if __version_info__["micro"]:
-        vers.append(".{micro}".format(**__version_info__))
+    vers = ["{major}.{minor}.{micro}".format(**__version_info__)]
 
     if __version_info__["releaselevel"] != "final" and not short:
         vers.append(
-            "{}{}".format(
+            "-{}.{}".format(
                 __version_info__["releaselevel"],
                 __version_info__["serial"],
             )

@@ -155,6 +155,14 @@ class Client(object):
 
         return self._prefix
 
+    @staticmethod
+    def get_version(short: bool = None) -> str:
+        """Returns the Client version."""
+        if short is None:
+            return get_version()
+        else:
+            return get_version(short)
+
     def status(self):
         return self.get("status", require_authentication=False)
 
