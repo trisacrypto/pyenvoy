@@ -78,7 +78,7 @@ def transactions():
 
 @pytest.fixture(scope="module")
 def transaction(transactions):
-    i = random.randint(0, len(transactions)-1)
+    i = random.randint(0, len(transactions) - 1)
     return transactions[i]
 
 
