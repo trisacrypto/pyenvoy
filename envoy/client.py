@@ -27,7 +27,7 @@ from envoy.transactions import Transactions
 from envoy.counterparties import Counterparties
 from envoy.users import Users
 from envoy.apikeys import APIKeys
-from envoy.utilities import TravelAddresses
+from envoy.utilities import Utilities
 
 try:
     from json import JSONDecodeError
@@ -129,7 +129,7 @@ class Client(object):
         self.counterparties = Counterparties(self)
         self.users = Users(self)
         self.apikeys = APIKeys(self)
-        self.travel_addresses = TravelAddresses(self)
+        self.utilities = Utilities(self)
 
     @property
     def timeout(self):

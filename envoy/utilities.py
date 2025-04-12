@@ -5,6 +5,13 @@ Utilities endpoints provided as helpers by the Envoy node
 from envoy import client
 
 
+class Utilities(object):
+
+    def __init__(self, client: "client.Client"):
+        self.travel_addresses = TravelAddresses(client)
+        self.ivms101_validator = IVMS101Validator(client)
+
+
 class TravelAddresses(object):
     """
     Accesses the travel address encode and decode utilities on the Envoy node.
@@ -19,7 +26,11 @@ class TravelAddresses(object):
         """
         data = {"decoded": rawuri}
         reply = self.client.post(
-            data, "utilities", "travel-address", "encode", require_authentication=True
+            data,
+            "utilities",
+            "travel-address",
+            "encode",
+            require_authentication=True,
         )
         return reply["encoded"]
 
@@ -29,6 +40,40 @@ class TravelAddresses(object):
         """
         data = {"encoded": travel_address}
         reply = self.client.post(
-            data, "utilities", "travel-address", "decode", require_authentication=True
+            data,
+            "utilities",
+            "travel-address",
+            "decode",
+            require_authentication=True,
         )
         return reply["decoded"]
+
+
+class IVMS101Validator(object):
+    """
+    Accesses the IVMS101 validator utility on the Envoy node.
+    """
+
+    def __init__(self, client: "client.Client"):
+        self.client = client
+
+    def validate(self, data: dict) -> dict:
+        """Validates an arbitrary JSON payload as IVMS101 and returns the
+        cross-protocol compatible JSON formatted IVMS101.
+
+        Args:
+            data (dict): the IVMS101 object to validate
+
+        Raises:
+            ClientError: if the IVMS101 object provided is invalid
+
+        Returns:
+            dict: cross-protocol compatible IVMS101 object
+        """
+        resp = self.client.post(
+            data,
+            "utilities",
+            "ivms101-validator",
+            require_authentication=True,
+        )
+        return resp
