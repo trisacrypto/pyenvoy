@@ -6,7 +6,6 @@ from envoy import client
 from envoy.resource import Resource
 from envoy.records import Record, PaginatedRecords
 from envoy.transactions import PaginatedTransactions
-from envoy.exceptions import NotFound
 
 
 ##########################################################################
@@ -59,7 +58,8 @@ class Accounts(Resource):
         """Lookup a customer account record by a crypto wallet address
 
         Args:
-            crypto_address (str): the crypto wallet address to lookup the associated account for
+            crypto_address (str): the crypto wallet address to lookup the associated
+                                  account for
             params (dict, optional): additional query parameters. Defaults to None.
 
         Raises:
@@ -84,7 +84,8 @@ class Accounts(Resource):
         )
 
     def transfers(self, rid: str, params: dict = None) -> list[dict]:
-        """Search for all transfers related to the account by matching the associated crypto wallet addresses.
+        """Search for all transfers related to the account by matching the associated
+        crypto wallet addresses.
 
         Args:
             rid (str): the ID of the account to list transfers for
@@ -104,12 +105,11 @@ class Accounts(Resource):
             parent=self,
         )
 
-    def qrcode(self, rid: str, params: dict = None) -> bytes:
+    def qrcode(self, rid: str) -> bytes:
         """Returns the bytes for a QR code image for the account travel address.
 
         Args:
             rid (str): the ID of the account to get a QR code for
-            params (dict, optional): additional query parameters. Defaults to None.
 
         Returns:
             bytes: image bytes that can be written directly to a file object
@@ -119,7 +119,6 @@ class Accounts(Resource):
             *self._endpoint(),
             rid,
             "qrcode",
-            params=params,
             require_authentication=True,
         )
 
@@ -136,3 +135,21 @@ class CryptoAddresses(Resource):
     @property
     def endpoint(self):
         return ("accounts", self.account["id"], "crypto-addresses")
+
+    def qrcode(self, rid: str) -> bytes:
+        """Generate and download a QR code for the travel address associated with the
+        crypto wallet address.
+
+        Args:
+            rid (str): the ID of the crypto address to generate a QR code for
+
+        Returns:
+            bytes: image bytes that can be written directly to a file object
+        """
+
+        return self.client.get(
+            *self._endpoint(),
+            rid,
+            "qrcode",
+            require_authentication=True,
+        )
