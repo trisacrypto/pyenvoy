@@ -51,10 +51,15 @@ def connect(url=None, client_id=None, client_secret=None, timeout=None):
     timeout : float
         The number of seconds to wait for a response until error.
     """
+
     if url is None or client_id is None or client_secret is None:
         # We need to load information from the environment
         load_dotenv()
 
-    return Client(
+    # create the client and perform the pre-flight now to authorize the client
+    # now so the client's first actual data request isn't delayed by seconds
+    client = Client(
         url=url, client_id=client_id, client_secret=client_secret, timeout=timeout
     )
+    client._pre_flight(require_authentication=True)
+    return client

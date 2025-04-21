@@ -18,62 +18,71 @@ CHUNK_SIZE = 1024 * 64
 ## Data Records
 ##########################################################################
 
+
 class Transaction(Record):
 
     def __init__(self, data=None, **kwargs):
         super(Transaction, self).__init__(data, **kwargs)
         self.secure_envelopes = SecureEnvelopes(self, self.parent.client)
 
-    def send(self, envelope):
+    def send(self, envelope) -> dict:
         ep = self._make_endpoint("send")
         return Record(
             self.parent.client.post(envelope, *ep, require_authentication=True),
-            parent=self
+            parent=self,
         )
 
-    def latest_payload(self, params=None):
+    def latest_payload(self, params=None) -> dict:
         ep = self._make_endpoint("payload")
         return Record(
             self.parent.client.get(*ep, params=params, require_authentication=True),
-            parent=self
+            parent=self,
         )
 
-    def accept_preview(self, params=None):
+    def accept_preview(self, params=None) -> dict:
         ep = self._make_endpoint("accept")
         return Record(
             self.parent.client.get(*ep, params=params, require_authentication=True),
-            parent=self
+            parent=self,
         )
 
-    def accept(self, envelope):
+    def accept(self, envelope) -> dict:
         ep = self._make_endpoint("accept")
         return Record(
             self.parent.client.post(envelope, *ep, require_authentication=True),
-            parent=self
+            parent=self,
         )
 
-    def reject(self, rejection):
+    def reject(self, rejection) -> dict:
         ep = self._make_endpoint("reject")
         return Record(
             self.parent.client.post(rejection, *ep, require_authentication=True),
-            parent=self
+            parent=self,
         )
 
-    def repair_preview(self, params=None):
+    def repair_preview(self, params=None) -> dict:
         ep = self._make_endpoint("repair")
         return Record(
             self.parent.client.get(*ep, params=params, require_authentication=True),
-            parent=self
+            parent=self,
         )
 
-    def repair(self, envelope):
+    def repair(self, envelope) -> dict:
         ep = self._make_endpoint("repair")
         return Record(
             self.parent.client.post(envelope, *ep, require_authentication=True),
-            parent=self
+            parent=self,
         )
 
-    def _make_endpoint(self, *actions):
+    def archive(self) -> None:
+        ep = self._make_endpoint("archive")
+        self.parent.client.post(None, *ep, require_authentication=True)
+
+    def unarchive(self) -> None:
+        ep = self._make_endpoint("unarchive")
+        self.parent.client.post(None, *ep, require_authentication=True)
+
+    def _make_endpoint(self, *actions) -> tuple[str]:
         return tuple(["transactions", self["id"]] + list(actions))
 
 
@@ -107,6 +116,7 @@ class PaginatedSecureEnvelopes(PaginatedRecords):
 ## API Resources
 ##########################################################################
 
+
 class Transactions(Resource):
 
     RecordType = Transaction
@@ -117,16 +127,28 @@ class Transactions(Resource):
         return "transactions"
 
     def prepare(self, prepare):
-        return Record(self.client.post(
-            prepare, *self._endpoint(), "prepare", require_authentication=True
-        ), parent=self)
+        return Record(
+            self.client.post(
+                prepare,
+                *self._endpoint(),
+                "prepare",
+                require_authentication=True,
+            ),
+            parent=self,
+        )
 
     def send_prepared(self, prepared):
-        return Record(self.client.post(
-            prepared, *self._endpoint(), "send-prepared", require_authentication=True
-        ), parent=self)
+        return Record(
+            self.client.post(
+                prepared,
+                *self._endpoint(),
+                "send-prepared",
+                require_authentication=True,
+            ),
+            parent=self,
+        )
 
-    def export(self, f: TextIO,  params: dict = None):
+    def export(self, f: TextIO, params: dict = None):
         """
         Export the transactions CSV file to the file-like object, f. This performs a
         streaming download of the possibly very large CSV file.
@@ -180,10 +202,10 @@ class SecureEnvelopes(Resource):
     def endpoint(self):
         return ("transactions", self.transaction["id"], "secure-envelopes")
 
-    def create(self, data: dict) -> dict:
+    def create(self, data: dict, params: dict = None) -> dict:
         raise ReadOnlyEndpoint("transaction secure envelopes are a read-only endpoint")
 
-    def update(self, data: dict) -> dict:
+    def update(self, data: dict, params: dict = None) -> dict:
         raise ReadOnlyEndpoint("transaction secure envelopes are a read-only endpoint")
 
     def delete(self, rid: str, params: dict = None) -> dict | None:

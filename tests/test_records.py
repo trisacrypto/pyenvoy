@@ -72,9 +72,7 @@ def test_record_of_record_lists():
                     {"name": "Edgar Fromage", "age": 49, "profession": "Tailor"},
                     {"name": "Mary Tillman", "age": 21, "profession": "Tinker"},
                 ],
-                "fruits": [
-                    "apple", "pear", "orange", "grapes"
-                ]
+                "fruits": ["apple", "pear", "orange", "grapes"],
             },
         }
     )

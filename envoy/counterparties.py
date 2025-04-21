@@ -12,6 +12,7 @@ from envoy.records import Record, PaginatedRecords
 ## Data Records
 ##########################################################################
 
+
 class Counterparty(Record):
 
     def __init__(self, data=None, **kwargs):
@@ -43,6 +44,7 @@ class PaginatedContacts(PaginatedRecords):
 ## API Resources
 ##########################################################################
 
+
 class Counterparties(Resource):
 
     RecordType = Counterparty
@@ -52,9 +54,12 @@ class Counterparties(Resource):
     def endpoint(self):
         return "counterparties"
 
-    def search(self, query: str, limit: int = 10) -> Counterparty | PaginatedCounterparties: # noqa
-        """
-        Perform a fuzzy search of counterparty names that is case-insensitive, and
+    def search(
+        self,
+        query: str,
+        limit: int = 10,
+    ) -> Counterparty | PaginatedCounterparties:
+        """Perform a fuzzy search of counterparty names that is case-insensitive, and
         normalizes unicode characters. The search results are ranked by match distance
         so the first results are more relevant than later results.
 
@@ -69,7 +74,10 @@ class Counterparties(Resource):
         """
         params = {"query": query, "limit": limit}
         reply = self.client.get(
-            self.endpoint, "search", params=params, require_authentication=True
+            self.endpoint,
+            "search",
+            params=params,
+            require_authentication=True,
         )
 
         if limit == 1 and len(reply["counterparties"]) == 1:

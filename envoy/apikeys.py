@@ -12,7 +12,7 @@ class APIKey(Record):
 
 class PaginatedAPIKeys(PaginatedRecords):
 
-    CollectionKey = "apikeys"
+    CollectionKey = "api_keys"
 
     def cast(self, item):
         return APIKey(item)

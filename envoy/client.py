@@ -3,6 +3,7 @@ Implements the API client that manages the authentication and cookie state of re
 to and from the Envoy server. This is a lower level object and should only be used by
 advanced users.
 """
+
 from __future__ import annotations
 
 import os
@@ -26,7 +27,7 @@ from envoy.transactions import Transactions
 from envoy.counterparties import Counterparties
 from envoy.users import Users
 from envoy.apikeys import APIKeys
-from envoy.utilities import TravelAddresses
+from envoy.utilities import Utilities
 
 try:
     from json import JSONDecodeError
@@ -120,7 +121,7 @@ class Client(object):
             pool_maxsize=pool_maxsize,
             max_retries=max_retries,
         )
-        self.session.mount(self.prefix+"://", self.adapter)
+        self.session.mount(self.prefix + "://", self.adapter)
 
         # Configure REST resources on the client
         self.accounts = Accounts(self)
@@ -128,7 +129,7 @@ class Client(object):
         self.counterparties = Counterparties(self)
         self.users = Users(self)
         self.apikeys = APIKeys(self)
-        self.travel_addresses = TravelAddresses(self)
+        self.utilities = Utilities(self)
 
     @property
     def timeout(self):
@@ -154,6 +155,14 @@ class Client(object):
 
         return self._prefix
 
+    @staticmethod
+    def get_version(short: bool = None) -> str:
+        """Returns the Client version."""
+        if short is None:
+            return get_version()
+        else:
+            return get_version(short)
+
     def status(self):
         return self.get("status", require_authentication=False)
 
@@ -172,12 +181,21 @@ class Client(object):
         )
 
         rep = self.session.get(
-            uri, headers=headers, params=params, timeout=self.timeout
+            uri,
+            headers=headers,
+            params=params,
+            timeout=self.timeout,
         )
 
         return self.handle(rep)
 
-    def post(self, data, *endpoint: tuple[str], require_authentication: bool = True):
+    def post(
+        self,
+        data,
+        *endpoint: tuple[str],
+        params: dict = None,
+        require_authentication: bool = True,
+    ):
         self._pre_flight(require_authentication)
         headers = self._request_headers
         uri = self._make_endpoint(*endpoint)
@@ -186,11 +204,23 @@ class Client(object):
             f"POST to {repr(uri)} with data {repr(data)} and headers {repr(headers)}"
         )
 
-        rep = self.session.post(uri, json=data, headers=headers, timeout=self.timeout)
+        rep = self.session.post(
+            uri,
+            json=data,
+            params=params,
+            headers=headers,
+            timeout=self.timeout,
+        )
 
         return self.handle(rep)
 
-    def put(self, data, *endpoint: tuple[str], require_authentication: bool = True):
+    def put(
+        self,
+        data,
+        *endpoint: tuple[str],
+        params: dict = None,
+        require_authentication: bool = True,
+    ):
         self._pre_flight(require_authentication)
         headers = self._request_headers
         uri = self._make_endpoint(*endpoint)
@@ -199,7 +229,13 @@ class Client(object):
             f"PUT to {repr(uri)} with data {repr(data)} and headers {repr(headers)}"
         )
 
-        rep = self.session.put(uri, json=data, headers=headers, timeout=self.timeout)
+        rep = self.session.put(
+            uri,
+            json=data,
+            params=params,
+            headers=headers,
+            timeout=self.timeout,
+        )
 
         return self.handle(rep)
 
@@ -218,7 +254,10 @@ class Client(object):
         )
 
         rep = self.session.delete(
-            uri, headers=headers, params=params, timeout=self.timeout
+            uri,
+            headers=headers,
+            params=params,
+            timeout=self.timeout,
         )
 
         return self.handle(rep)
