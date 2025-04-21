@@ -31,7 +31,7 @@ Set the following environment variables:
 2. `$ENVOY_CLIENT_ID`: the client ID of your API keys
 3. `$ENVOY_CLIENT_SECRET`: the client secret for your API keys
 
-If you're using the `connect()` function, you can also store these variables in a `.env` file in your current working directory (see [.env.EXAMPLE](./.env.EXAMPLE)).
+If you're using the `connect()` function, you can also store these variables in a `.env` file in your current working directory (see [.env.template](./.env.template)).
 
 Create an envoy client:
 
