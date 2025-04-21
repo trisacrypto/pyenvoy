@@ -61,19 +61,20 @@ class IVMS101Validator(object):
         """Validates an arbitrary JSON payload as IVMS101 and returns the
         cross-protocol compatible JSON formatted IVMS101.
 
-        Args:
-            data (dict): the IVMS101 object to validate
+        Parameters
+        ----------
+        data : dict
+            the IVMS101 object to validate
 
-        Raises:
-            ClientError: if the IVMS101 object provided is invalid
-
-        Returns:
-            dict: cross-protocol compatible IVMS101 object
+        Returns
+        -------
+        dict
+            cross-protocol compatible IVMS101 object
         """
-        resp = self.client.post(
+
+        return self.client.post(
             data,
             "utilities",
             "ivms101-validator",
             require_authentication=True,
         )
-        return resp

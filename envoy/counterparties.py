@@ -58,9 +58,8 @@ class Counterparties(Resource):
         self,
         query: str,
         limit: int = 10,
-    ) -> Counterparty | PaginatedCounterparties:  # noqa
-        """
-        Perform a fuzzy search of counterparty names that is case-insensitive, and
+    ) -> Counterparty | PaginatedCounterparties:
+        """Perform a fuzzy search of counterparty names that is case-insensitive, and
         normalizes unicode characters. The search results are ranked by match distance
         so the first results are more relevant than later results.
 

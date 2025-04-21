@@ -2,6 +2,8 @@
 Resource that manages the customer accounts the Envoy node knows about.
 """
 
+from io import BytesIO
+
 from envoy import client
 from envoy.resource import Resource
 from envoy.records import Record, PaginatedRecords
@@ -57,17 +59,19 @@ class Accounts(Resource):
     def lookup(self, crypto_address: str, params: dict = None) -> dict:
         """Lookup a customer account record by a crypto wallet address
 
-        Args:
-            crypto_address (str): the crypto wallet address to lookup the associated
-                                  account for
-            params (dict, optional): additional query parameters. Defaults to None.
+        Parameters
+        ----------
+        crypto_address : str
+            the crypto wallet address to lookup the associated account for
+        params : dict, optional
+            additional query parameters, by default None
 
-        Raises:
-            NotFound: when no account is found with a matching crypto address
-
-        Returns:
-            dict: an account
+        Returns
+        -------
+        dict
+            an account
         """
+
         if params:
             params.update({"crypto_address": crypto_address})
         else:
@@ -87,13 +91,19 @@ class Accounts(Resource):
         """Search for all transfers related to the account by matching the associated
         crypto wallet addresses.
 
-        Args:
-            rid (str): the ID of the account to list transfers for
-            params (dict, optional): additional query parameters. Defaults to None.
+        Parameters
+        ----------
+        rid : str
+            the ID of the account to list transfers for
+        params : dict, optional
+            additional query parameters, by default None
 
-        Returns:
-            list[dict]: a list of all transfers related to the account
+        Returns
+        -------
+        list[dict]
+            a list of all transfers related to the account
         """
+
         return PaginatedTransactions(
             self.client.get(
                 *self._endpoint(),
@@ -105,21 +115,27 @@ class Accounts(Resource):
             parent=self,
         )
 
-    def qrcode(self, rid: str) -> bytes:
-        """Returns the bytes for a QR code image for the account travel address.
+    def qrcode(self, rid: str) -> BytesIO:
+        """Generate and download a QR code for the account travel address.
 
-        Args:
-            rid (str): the ID of the account to get a QR code for
+        Parameters
+        ----------
+        rid : str
+            the ID of the crypto address to generate a QR code for
 
-        Returns:
-            bytes: image bytes that can be written directly to a file object
+        Returns
+        -------
+        BytesIO
+            the QR code image bytes
         """
 
-        return self.client.get(
-            *self._endpoint(),
-            rid,
-            "qrcode",
-            require_authentication=True,
+        return BytesIO(
+            self.client.get(
+                *self._endpoint(),
+                rid,
+                "qrcode",
+                require_authentication=True,
+            )
         )
 
 
@@ -136,20 +152,26 @@ class CryptoAddresses(Resource):
     def endpoint(self):
         return ("accounts", self.account["id"], "crypto-addresses")
 
-    def qrcode(self, rid: str) -> bytes:
+    def qrcode(self, rid: str) -> BytesIO:
         """Generate and download a QR code for the travel address associated with the
         crypto wallet address.
 
-        Args:
-            rid (str): the ID of the crypto address to generate a QR code for
+        Parameters
+        ----------
+        rid : str
+            the ID of the crypto address to generate a QR code for
 
-        Returns:
-            bytes: image bytes that can be written directly to a file object
+        Returns
+        -------
+        BytesIO
+            the QR code image bytes
         """
 
-        return self.client.get(
-            *self._endpoint(),
-            rid,
-            "qrcode",
-            require_authentication=True,
+        return BytesIO(
+            self.client.get(
+                *self._endpoint(),
+                rid,
+                "qrcode",
+                require_authentication=True,
+            )
         )
