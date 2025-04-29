@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import os
 import logging
+import posixpath
 
 from platform import python_version
 from envoy.version import get_version
@@ -320,7 +321,7 @@ class Client(object):
         Creates an API endpoint from the specified resource endpoint, adding the api
         version identifier to the path to construct a valid Envoy URL.
         """
-        path = os.path.join("v1", *endpoint)
+        path = posixpath.join("v1", *endpoint)
         params = params or {}
 
         return urlunparse(
