@@ -15,6 +15,10 @@ Virtual Asset Service Providers (VASPs) can deploy an Envoy node in order to int
 
 The API allows users to treat Envoy as their boundary node to compliance networks, and integrate travel rule data exchanges with their transaction processing systems or internal compliance tools.
 
+## Version note
+
+Envoy uses semantic versioning like `major.minor.micro` (for full release versions). API-compatibility between the Envoy server and `pyenvoy` client will be based on the `major.minor` version, however the `micro` version may differ between the two.
+
 ## Getting Started
 
 You will need to deploy or host an Envoy node at a URL accessible by the client, then generate an API key and save the client ID and secret for the keys.
