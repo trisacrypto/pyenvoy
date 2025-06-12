@@ -6,15 +6,15 @@ from setuptools import find_packages
 
 
 ## Basic Information
-NAME        = "pyenvoy"
-DESCRIPTION = "An API client for TRISA Envoy nodes that enables travel rule compliance."
-AUTHOR      = "Rotational Labs"
-EMAIL       = "support@rotational.io"
-MAINTAINER  = "Rotational Labs"
-LICENSE     = "MIT"
-REPOSITORY  = "https://github.com/trisacrypto/pyenvoy"
-PACKAGE     = "envoy"
-URL         = "https://trisa.dev"
+NAME               = "pyenvoy"
+DESCRIPTION        = "An API client for TRISA Envoy nodes that enables travel rule compliance."
+AUTHOR             = "Rotational Labs"
+EMAIL              = "support@rotational.io"
+MAINTAINER         = "Rotational Labs"
+LICENSE_EXPRESSION = "MIT"
+REPOSITORY         = "https://github.com/trisacrypto/pyenvoy"
+PACKAGE            = "envoy"
+URL                = "https://trisa.dev"
 
 
 ## Define the keywords
@@ -31,7 +31,6 @@ KEYWORDS = [
 CLASSIFIERS = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
-    "MIT License",
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
@@ -108,7 +107,7 @@ if __name__ == "__main__":
         "long_description_content_type": get_description_type(PKG_DESCRIBE),
         "classifiers": CLASSIFIERS,
         "keywords": KEYWORDS,
-        "license": LICENSE,
+        "license_expression": LICENSE_EXPRESSION,
         "author": AUTHOR,
         "author_email": EMAIL,
         "url": URL,
