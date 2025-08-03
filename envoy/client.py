@@ -29,6 +29,7 @@ from envoy.counterparties import Counterparties
 from envoy.users import Users
 from envoy.apikeys import APIKeys
 from envoy.utilities import Utilities
+from envoy.complianceauditlogs import ComplianceAuditLogs
 
 try:
     from json import JSONDecodeError
@@ -131,6 +132,7 @@ class Client(object):
         self.users = Users(self)
         self.apikeys = APIKeys(self)
         self.utilities = Utilities(self)
+        self.complianceauditlogs = ComplianceAuditLogs(self)
 
     @property
     def timeout(self):
