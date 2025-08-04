@@ -6,15 +6,15 @@ from setuptools import find_packages
 
 
 ## Basic Information
-NAME               = "pyenvoy"
-DESCRIPTION        = "An API client for TRISA Envoy nodes that enables travel rule compliance."
-AUTHOR             = "Rotational Labs"
-EMAIL              = "support@rotational.io"
-MAINTAINER         = "Rotational Labs"
+NAME = "pyenvoy"
+DESCRIPTION = "An API client for TRISA Envoy nodes that enables travel rule compliance."
+AUTHOR = "Rotational Labs"
+EMAIL = "support@rotational.io"
+MAINTAINER = "Rotational Labs"
 LICENSE_EXPRESSION = "MIT"
-REPOSITORY         = "https://github.com/trisacrypto/pyenvoy"
-PACKAGE            = "envoy"
-URL                = "https://trisa.dev"
+REPOSITORY = "https://github.com/trisacrypto/pyenvoy"
+PACKAGE = "envoy"
+URL = "https://trisa.dev"
 
 
 ## Define the keywords
@@ -75,7 +75,7 @@ def get_version(path=VERSION_PATH):
     """
     namespace = {}
     exec(read(path), namespace)
-    return namespace["get_version"](short=True)
+    return namespace["get_version"](short=False)
 
 
 def get_requires(path=REQUIRE_PATH):
