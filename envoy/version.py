@@ -9,7 +9,7 @@ __version_info__ = {
     "micro": 0,
     "releaselevel": "rc",
     "post": 0,
-    "serial": 1,
+    "serial": 2,
 }
 
 
