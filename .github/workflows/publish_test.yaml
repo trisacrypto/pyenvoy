@@ -1,8 +1,5 @@
 name: Test Publish TestPyPI Packages
 on:
-  push:
-    branches:
-      - "v*"
   pull_request:
 
 permissions:
