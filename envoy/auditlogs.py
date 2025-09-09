@@ -26,7 +26,7 @@ class AuditLogs(Resource):
 
     @property
     def endpoint(self):
-        return "complianceauditlogs"
+        return "auditlogs"
 
     def create(self) -> None:
         """Audit logs are a read-only resource; this function will raise envoy.exceptions.ReadOnlyEndpoint."""
