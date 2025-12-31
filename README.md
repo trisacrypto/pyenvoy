@@ -2,7 +2,7 @@
 
 **A Python API client for [TRISA Envoy](https://trisa.dev/envoy/index.html) nodes**.
 
-Envoy is a secure messaging tool designed for travel rule data exchanges, ensuring compliance using the [TRISA](https://trisa.io) (Travel Rule Information Sharing Architecture) and [TRP](https://www.openvasp.org/trp) (Travel Rule Protocol) protocols.
+Envoy is a secure messaging tool designed for travel rule data exchanges, ensuring compliance using the [TRISA](https://travelrule.io) (Travel Rule Information Sharing Architecture) and [TRP](https://www.openvasp.org/trp) (Travel Rule Protocol) protocols.
 
 Virtual Asset Service Providers (VASPs) can deploy an Envoy node in order to interact with the compliance network using peer-to-peer messaging. The `pyenvoy` package allows VASPs to interact with their Envoy node programatically in Python so that they can:
 
@@ -26,7 +26,7 @@ You will need to deploy or host an Envoy node at a URL accessible by the client,
 You can install PyEnvoy as follows:
 
 ```
-$ pip install -U pyenvoy
+pip install -U pyenvoy
 ```
 
 Set the following environment variables:
