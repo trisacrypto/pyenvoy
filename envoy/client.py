@@ -13,10 +13,10 @@ import posixpath
 from platform import python_version
 from envoy.version import get_version
 
+from typing import Optional
 from requests import Response
 from email.message import Message
 from collections import namedtuple
-from typing import Optional, Literal
 from requests.sessions import Session
 from requests.adapters import HTTPAdapter
 from urllib.parse import urlparse, urlunparse, urlencode
@@ -321,7 +321,7 @@ class Client(object):
         else:
             raise ValueError(f"unhandled status code {rep.status_code}")
 
-    def _make_endpoint(self, *endpoint, params: Optional[dict] = None) -> Literal[b""]:
+    def _make_endpoint(self, *endpoint, params: Optional[dict] = None) -> str:
         """
         Creates an API endpoint from the specified resource endpoint, adding the api
         version identifier to the path to construct a valid Envoy URL.
