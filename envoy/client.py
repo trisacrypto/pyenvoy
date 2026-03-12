@@ -16,6 +16,7 @@ from envoy.version import get_version
 from requests import Response
 from email.message import Message
 from collections import namedtuple
+from typing import Optional, Literal
 from requests.sessions import Session
 from requests.adapters import HTTPAdapter
 from urllib.parse import urlparse, urlunparse, urlencode
@@ -23,13 +24,13 @@ from urllib.parse import urlparse, urlunparse, urlencode
 from envoy.credentials import Credentials
 from envoy.exceptions import AuthenticationError, ServerError, ClientError, NotFound
 
-from envoy.accounts import Accounts
-from envoy.transactions import Transactions
-from envoy.counterparties import Counterparties
 from envoy.users import Users
 from envoy.apikeys import APIKeys
+from envoy.accounts import Accounts
 from envoy.utilities import Utilities
 from envoy.auditlogs import AuditLogs
+from envoy.transactions import Transactions
+from envoy.counterparties import Counterparties
 
 try:
     from json import JSONDecodeError
@@ -100,6 +101,8 @@ class Client(object):
         self.client_secret = client_secret or os.environ.get(ENV_CLIENT_SECRET, None)
 
         url = url or os.environ.get(ENV_URL, "")
+        if not url:
+            raise ClientError("no envoy url or host specified")
 
         self._creds = None
         self._host = parse_url_host(url)
@@ -159,7 +162,7 @@ class Client(object):
         return self._prefix
 
     @staticmethod
-    def get_version(short: bool = None) -> str:
+    def get_version(short: Optional[bool] = None) -> str:
         """Returns the Client version."""
         if short is None:
             return get_version()
@@ -171,8 +174,8 @@ class Client(object):
 
     def get(
         self,
-        *endpoint: tuple[str],
-        params: dict = None,
+        *endpoint,
+        params: Optional[dict] = None,
         require_authentication: bool = True,
     ):
         self._pre_flight(require_authentication)
@@ -195,8 +198,8 @@ class Client(object):
     def post(
         self,
         data,
-        *endpoint: tuple[str],
-        params: dict = None,
+        *endpoint,
+        params: Optional[dict] = None,
         require_authentication: bool = True,
     ):
         self._pre_flight(require_authentication)
@@ -220,8 +223,8 @@ class Client(object):
     def put(
         self,
         data,
-        *endpoint: tuple[str],
-        params: dict = None,
+        *endpoint,
+        params: Optional[dict] = None,
         require_authentication: bool = True,
     ):
         self._pre_flight(require_authentication)
@@ -244,8 +247,8 @@ class Client(object):
 
     def delete(
         self,
-        *endpoint: tuple[str],
-        params: dict = None,
+        *endpoint,
+        params: Optional[dict] = None,
         require_authentication: bool = True,
     ):
         self._pre_flight(require_authentication)
@@ -318,7 +321,7 @@ class Client(object):
         else:
             raise ValueError(f"unhandled status code {rep.status_code}")
 
-    def _make_endpoint(self, *endpoint: tuple[str], params: dict = None) -> str:
+    def _make_endpoint(self, *endpoint, params: Optional[dict] = None) -> Literal[b""]:
         """
         Creates an API endpoint from the specified resource endpoint, adding the api
         version identifier to the path to construct a valid Envoy URL.
