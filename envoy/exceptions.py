@@ -9,6 +9,12 @@ class EnvoyError(Exception):
     """
 
 
+class CommandError(EnvoyError):
+    """
+    Capture command line errors that do not need a traceback.
+    """
+
+
 class ServerError(EnvoyError):
     """
     An error that is raised when the server returns a 500 status code.

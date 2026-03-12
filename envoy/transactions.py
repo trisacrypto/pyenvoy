@@ -148,6 +148,17 @@ class Transactions(Resource):
             parent=self,
         )
 
+    def archive(self):
+        return Record(
+            self.client.post(
+                None,
+                *self._endpoint(),
+                "archive",
+                require_authentication=True,
+            ),
+            parent=self,
+        )
+
     def export(self, f: TextIO, params: dict = None):
         """
         Export the transactions CSV file to the file-like object, f. This performs a
